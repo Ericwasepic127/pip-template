@@ -1,7 +1,7 @@
 #!/bin/bash
 # Made by @Ericwasepic127
 
-TEST=""
+REPO="pypi"
 
 while [ $# -gt 0 ]; do
     case "$1" in
@@ -17,9 +17,9 @@ while [ $# -gt 0 ]; do
             PYTHON="$2"
             shift 2
             ;;
-        --test)
-            TEST=true
-            shift
+        --repo)
+            REPO="$2"
+            shift 2
             ;;
         *)
             echo "Unknown option: $1"
@@ -60,9 +60,5 @@ $PYTHONPIP install --upgrade pip
 $PYTHONPIP install --upgrade setuptools twine build
 
 if ! $PYTHONLOC -m build; then
-    if [ -z "$TEST" ]; then
-        $PYTHONLOC -m twine upload --repository testpypi --username __token__ --password "$PYPI_TOKEN" dist/*
-    else
-        $PYTHONLOC -m twine upload --username __token__ --password "$PYPI_TOKEN" dist/*
-    fi
+    $PYTHONLOC -m twine upload --repository $REPO --username __token__ --password "$PYPI_TOKEN" dist/*
 fi

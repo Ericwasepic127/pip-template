@@ -51,14 +51,15 @@ if [ -z "$PYTHONPIP" ]; then
     PYTHONPIP="$PYTHONLOC -m pip"
 fi
 
-if ! "$PYTHONPIP" --version >/dev/null 2>&1; then
+$PYTHONPIP --version >/dev/null 2>&1
+
+if ! [ $? ]; then
     echo "Pip doesn't found, exiting ..."
     exit 1
 fi
 
-$PYTHONPIP install --upgrade pip
-$PYTHONPIP install --upgrade setuptools twine build
+$PYTHONPIP install --upgrade pip && $PYTHONPIP install --upgrade setuptools twine build
 
-if ! $PYTHONLOC -m build; then
+if $PYTHONLOC -m build; then
     $PYTHONLOC -m twine upload --repository $REPO --username __token__ --password "$PYPI_TOKEN" dist/*
 fi
